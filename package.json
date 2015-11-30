@@ -1,0 +1,28 @@
+{
+  "name": "tunr_express",
+  "version": "1.0.0",
+  "description": "Tunr is the worlds #1 music web app (those Spotify haters can't keep up with us).",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "hbs": "^3.1.0",
+    "kerberos": "~0.0.17",
+    "method-override": "^2.3.5",
+    "mongoose": "^4.2.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ga-dc/tunr_express.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ga-dc/tunr_express/issues"
+  },
+  "homepage": "https://github.com/ga-dc/tunr_express"
+}
