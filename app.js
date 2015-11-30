@@ -3,7 +3,9 @@ var app = express();
 var path = require("path");
 var bodyParser = require("body-parser");
 
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static("public"));
 app.set("view engine", "hbs");
 
@@ -11,7 +13,7 @@ var artistsController = require("./controllers/artists");
 var songsController = require("./controllers/songs");
 
 app.get("/", function(req, res){
-  res.render("index", {})
+  res.render("index", {});
 });
 
 app.use("/", artistsController);

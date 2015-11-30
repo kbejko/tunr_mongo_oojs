@@ -1,5 +1,7 @@
 var express = require("express");
 var router = express.Router();
+var Artist = require("../models/artist");
+var Song = require("../models/song");
 
 function error(response, message){
   response.status(500);
@@ -7,27 +9,34 @@ function error(response, message){
 }
 
 router.get("/artists", function(req, res){
-  res.render("artists index");
+  Artist.find({}).populate("songs").then(function(artists){
+    res.json(artists);
+  });
 });
 
 router.post("/artists", function(req, res){
-  res.send("create artist");
+  console.log(req)
+  new Artist(req.body).save().then(function(artist){
+    res.json(artist);
+  });
 });
 
 router.get("/artists/:id", function(req, res){
-  res.send("get artist " + req.params.id);
+  Artist.findById(req.params.id).populate("songs").then(function(artist){
+    res.json(artist);
+  });
 });
 
-router.get("/artists/:id/songs", function(req, res){
-  res.send("get artist " + req.params.id + "'s songs");
-});
-
-router.patch("/artists/:id", function(req, res){
-  res.send("update artist " + req.params.id);
+router.put("/artists/:id", function(req, res){
+  Artist.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(function(artist){
+    res.json(artist);
+  })
 });
 
 router.delete("/artists/:id", function(req, res){
-  res.send("delete artist " + req.params.id);
+  Artist.findByIdAndRemove(req.params.id).then(function(){
+    res.json({success: true});
+  });
 });
 
 module.exports = router;
