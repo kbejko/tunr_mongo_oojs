@@ -3,21 +3,15 @@ var app = express();
 var path = require("path");
 var bodyParser = require("body-parser");
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(express.static("public"));
-app.set("view engine", "hbs");
-
-var artistsController = require("./controllers/artists");
-var songsController = require("./controllers/songs");
+app.use(express.static(path.join(__dirname, "/public")));
+app.use(bodyParser.json());
 
 app.get("/", function(req, res){
-  res.render("index", {});
+  res.render("index.html");
 });
 
-app.use("/", artistsController);
-app.use("/", songsController);
+app.use("/artists", require("./controllers/artists"));
+app.use("/songs", require("./controllers/songs"));
 
 app.listen(3000, function(){
   console.log("Listening on port 3000");

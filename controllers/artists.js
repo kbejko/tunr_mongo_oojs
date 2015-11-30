@@ -8,32 +8,38 @@ function error(response, message){
   response.json({error: message})
 }
 
-router.get("/artists", function(req, res){
+router.get("/", function(req, res){
   Artist.find({}).populate("songs").then(function(artists){
     res.json(artists);
   });
 });
 
-router.post("/artists", function(req, res){
-  console.log(req)
+router.post("/", function(req, res){
   new Artist(req.body).save().then(function(artist){
     res.json(artist);
   });
 });
 
-router.get("/artists/:id", function(req, res){
+router.get("/:id", function(req, res){
   Artist.findById(req.params.id).populate("songs").then(function(artist){
     res.json(artist);
   });
 });
 
-router.put("/artists/:id", function(req, res){
+router.get("/:id/songs", function(req, res){
+  Artist.findById(req.params.id).populate("songs").then(function(artist){
+    res.json(artist.songs);
+  });
+});
+
+router.patch("/:id", function(req, res){
+  console.log(req.body)
   Artist.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(function(artist){
     res.json(artist);
   })
 });
 
-router.delete("/artists/:id", function(req, res){
+router.delete("/:id", function(req, res){
   Artist.findByIdAndRemove(req.params.id).then(function(){
     res.json({success: true});
   });

@@ -8,25 +8,25 @@ function error(response, message){
   response.json({error: message})
 }
 
-router.get("/songs", function(req, res){
+router.get("/", function(req, res){
   Song.find({}).populate("artist", "name").then(function(songs){
     res.json(songs);
   });
 });
 
-router.get("/songs/:id", function(req, res){
+router.get("/:id", function(req, res){
   Song.findById(req.params.id).populate("artist", "name").then(function(song){
     res.json(song);
   });
 });
 
-router.put("/songs/:id", function(req, res){
+router.put("/:id", function(req, res){
   Song.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(function(song){
     res.json(song);
   });
 });
 
-router.delete("/songs/:id", function(req, res){
+router.delete("/:id", function(req, res){
   Song.findById(req.params.id).then(function(song){
     Artist.findByIdAndUpdate(song.artist._id, {
       $pull: { songs: {_id: req.params.id} }
