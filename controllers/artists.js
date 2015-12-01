@@ -33,7 +33,6 @@ router.get("/:id/songs", function(req, res){
 });
 
 router.patch("/:id", function(req, res){
-  console.log(req.body)
   Artist.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(function(artist){
     res.json(artist);
   })

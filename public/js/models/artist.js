@@ -2,7 +2,7 @@ var Artist = function(info){
   this.name = info.name;
   this.photoUrl = info.photoUrl;
   this.nationality = info.nationality;
-  this.id = info._id;
+  this.id = info.id;
 };
 
 Artist.fetch = function(){
