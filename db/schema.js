@@ -4,12 +4,22 @@ mongoose.connect("mongodb://localhost/tunr");
 var Schema = mongoose.Schema;
 var ObjectId = Schema.Types.ObjectId;
 
-var ArtistSchema = new Schema({
-  name: String,
-  nationality: String,
-  photoUrl: String,
-  songs: [{type: ObjectId, ref: "Song"}]
-})
+var ArtistSchema = new Schema(
+  {
+    name: String,
+    nationality: String,
+    photoUrl: String,
+    songs: [{type: ObjectId, ref: "Song"}]
+  },
+  {
+    toObject: {virtuals: true},
+    toJSON: {virtuals: true}
+  }
+);
+
+ArtistSchema.virtual("id").get(function(){
+  return this._id;
+});
 
 var SongSchema = new Schema({
   title: String,
