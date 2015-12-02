@@ -4,42 +4,36 @@ var Artist = function(info){
   this.nationality = info.nationality;
   this.id = info.id;
 };
-
+Artist.all = []
 Artist.fetch = function(){
-  var request = $.getJSON("http://localhost:3000/artists")
-  .then(function(response) {
-    var artists = [];
+  var url = "http://localhost:3000/artists";
+  var request = $.getJSON(url).then(function(response){
     for(var i = 0; i < response.length; i++){
-      artists.push(new Artist(response[i]));
+      Artist.all.push(new Artist(response[i]));
     }
-    return artists;
-    })
-  .fail(function(response){
-      console.log("js failed to load");
-    });
+  }).fail(function(response){
+    console.log("js failed to load");
+  });
   return request;
 };
 
 Artist.prototype = {
   fetchSongs: function(){
-    var url = "http://localhost:3000/artists/" + this.id + "/songs";
-    var request = $.getJSON(url)
-    .then(function(response){
-      var songs = [];
+    var artist = this;
+    var url = "http://localhost:3000/artists/" + artist.id + "/songs";
+    artist.songs = [];
+    var request = $.getJSON(url).then(function(response){
       for(var i = 0; i < response.length; i++){
-        songs.push(new Song(response[i]));
+        artist.songs.push(new Song(response[i]));
       }
-      return songs;
-     })
-    .fail(function(repsonse){
+    }).fail(function(repsonse){
       console.log("js failed to load");
     });
     return request;
   },
   update: function(artistData) {
     var self = this;
-
-    var url = "http://localhost:3000/artists/" + this.id;
+    var url = "http://localhost:3000/artists/" + self.id;
     var request = $.ajax({
       url: url,
       method: "patch",

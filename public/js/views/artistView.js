@@ -1,35 +1,28 @@
 var ArtistView = function(artist){
   this.artist = artist;
-
   this.$el = $("<div class='artist'></div>");
   this.render();
-
   $(".artists").append(this.$el);
 };
 
 ArtistView.prototype = {
   render: function(){
     var self = this;
-
     self.$el.html(self.artistTemplate(self.artist));
-
     var showButton = self.$el.find(".showSongs");
     var editButton = self.$el.find(".editArtist");
     var songsDiv   = self.$el.find("div.songs");
-
     songsDiv.hide(); // hide div until it's populated with songs
-
     showButton.on("click", function(){
       self.toggleSongs(songsDiv);
     });
-
     editButton.on("click", function() {
       self.renderEditForm();
     });
   },
   renderEditForm: function() {
     var self = this;
-    self.$el.html(this.artistEditTemplate(this.artist));
+    self.$el.html(self.artistEditTemplate(self.artist));
 
     self.$el.find(".updateArtist").on("click", function() {
       self.updateArtist();
@@ -46,13 +39,13 @@ ArtistView.prototype = {
     var self = this;
     // if not in DOM, populate
     if(songsDiv.children().length === 0){
-      this.artist.fetchSongs().then(function(songs){
-        self.appendSongs(songs, songsDiv);
+      self.artist.fetchSongs().then(function(){
+        self.appendSongs(self.artist.songs, songsDiv);
       });
     }
     // toggle (note: songsDiv starts hidden)
     songsDiv.toggle();
-    this.toggleButton(songsDiv);
+    self.toggleButton(songsDiv);
   },
   appendSongs: function(songs, songsDiv){
     songs.forEach(function(song){
@@ -66,7 +59,8 @@ ArtistView.prototype = {
                   photoUrl: $('input[name=photoUrl]').val() };
     self.artist.update(data).then(function() { self.render(); });
   },
-  artistTemplate: function(artist){
+  artistTemplate: function(){
+    var artist = this.artist;
     var html = $("<div>");
     html.append("<h3>" + artist.name + "</h3>");
     html.append("<img class='artist-photo' src='" + artist.photoUrl + "'>");
@@ -75,7 +69,8 @@ ArtistView.prototype = {
     html.append("<div class='songs'></div>");
     return(html);
   },
-  artistEditTemplate: function(artist) {
+  artistEditTemplate: function() {
+    var artist = this.artist;
     var html = $("<div>");
     html.append("<input name='name' value='" + artist.name + "'>");
     html.append("<img class='artist-photo' src='" + artist.photoUrl + "'>");
