@@ -5,36 +5,57 @@ var Artist = function(info){
   this.id = info.id
 }
 
+Artist.all = []
 Artist.fetch = function(){
-  // saving ajax request to local variable
-  // the promise function on a successful ajax call
-  var request = $.getJSON('http://localhost:3000/artists').then(function(response){
-    // local variable in the promise callback instantiated as an empty array
-    var artists = []
-    // loop over each element in the response
-    for(var i = 0; i < response.length; i++){
-      // create a new JS Artist object for each element in the response
-      artists.push(new Artist(response[i]))
+  var url = 'http://localhost:3000/artists'
+  var request = $.getJSON(url).then(function(response){
+    for (var i = 0; i < response.length; i++){
+      Artist.all.push(new Artist(response[i]))
     }
-    // returns artists in the promise so that it can be passed in as an argument to future promises
-    return artists
   }).fail(function(response){
     console.log("artists fetch fail")
   })
-  // explicit return of the fetch function that returns the json request with artist available as argument for future promises
   return request
 }
 
-Artist.prototype.fetchSongs = function(){
-  var url = 'http://localhost:3000/artists/' + this.id + '/songs'
-  var request = $.getJSON(url).then(function(response){
-    var songs = []
-    for(var i = 0; i < response.length; i++){
-      songs.push(new Song(response[i]))
+Artist.prototype = {
+  fetchSongs: function(){
+    var artist = this
+    var url = 'http://localhost:3000/artists/' + artist.id + '/songs'
+    artist.songs = []
+    var request = $.getJSON(url).then(function(response){
+      for(var i = 0; i < response.length; i++){
+        artist.songs.push(new Song(response[i]))
+      }
+    }).fail(function(response){
+      console.log('js failed to load')
+    })
+    return request
+  },
+  update: function(artistData){
+    var self = this
+    var url = 'http://localhost:3000/artists/' + self.id
+    var request = $.ajax({
+      url: url,
+      method: 'patch',
+      data: JSON.stringify(artistData),
+      contentType: 'application/json'
+    }).then(function(updateArtistInfo){
+      self.reload(updateArtistInfo)
+    })
+    return request
+  },
+  destroy: function(){
+    var url = 'http://localhost:3000/artists/' + this.id
+    var request = $.ajax({
+      url: url,
+      method: 'delete'
+    })
+    return request
+  },
+  reload: function(newData){
+    for(var attrname in newData) {
+      this[attrname] = newData[attrname]
     }
-    return songs
-  }).fail(function(response){
-    console.log('js failed to load')
-  })
-  return request
+  }
 }
